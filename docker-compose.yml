@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  bugsDb:
+   image: mcr.microsoft.com/mssql/server:2017-CU11-ubuntu
+   environment:
+    ACCEPT_EULA: "Y"
+    SA_PASSWORD: "myPass123"
+    MSSQL_PID: Express
+   ports: 
+    - "1433:1433"
+
+  bugsapi:
+   ports:
+    - "8080:80"
+   environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+   build:
+    context: ./BugSystem
+    dockerfile: Dockerfile
+  
+  frontend:
+   image: ${DOCKER_REGISTRY-}frontend
+   ports:
+    - "80:80"
+   environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+   build:
+    context: ./frontend
+    dockerfile: Dockerfile
